@@ -10,54 +10,83 @@ function computerPlay(input) {
 //To create a object to keep the scores
 const scoreKeeper = {
     user: 0,
-    pc: 0
+    userSelection: '',
+    pc: 0,
+    pcSelection: '',
+    gameOver: false,
 }
 
 //Function to compare the two inputs and return game result
-function playRound(playerSelection, computerSelection, score) {
+function playRound(scoreKeeper) {
     //Firstly make judgement between two inputs to see if they are same
-    if (playerSelection !== computerSelection) {
+    if (scoreKeeper.userSelection !== scoreKeeper.pcSelection) {
         //Use switch to compare each pair of inputs
-        switch (playerSelection) {
+        switch (scoreKeeper.userSelection) {
             case 'rock':
-                if (computerSelection === 'scissors') {
-                    score.user++;
+                if (scoreKeeper.pcSelection === 'scissors') {
+                    scoreKeeper.user++;
                 } else {
-                    score.pc++;
+                    scoreKeeper.pc++;
                 }
                 break;
             case 'paper':
-                if (computerSelection === 'rock') {
-                    score.user++;
+                if (scoreKeeper.pcSelection === 'rock') {
+                    scoreKeeper.user++;
                 } else {
-                    score.pc++;
+                    scoreKeeper.pc++;
                 }
                 break;
             case 'scissors':
-                if (computerSelection === 'paper') {
-                    score.user++;
+                if (scoreKeeper.pcSelection === 'paper') {
+                    scoreKeeper.user++;
                 } else {
-                    score.pc++;
+                    scoreKeeper.pc++;
                 }
         }
     }
 }
 
-//Function to record the game scores and bo5
-function game(score) {
-    for (let i = 0; i < 5; i++) {
-        //To save the user's input
-        const userInput = prompt("Please enter rock, paper, or scissors to play.").toLowerCase();
-        playRound(userInput, computerPlay(pcInput), score);
-        console.log(`${score.user} ${score.pc}`)
-    }
-    if (score.user === score.pc) {
-        console.log('Game ties!');
-    } else if (score.pc > score.pc) {
-        console.log(`Player won! Player got ${score.user}`);
-    } else if (score.user < score.pc) {
-        console.log(`Computer won! Computer got ${score.pc}`);
+const btn = Array.from(document.querySelectorAll('.button'));
+const player = document.querySelector('.player');
+const selectToWin = document.querySelector('#rounds');
+const resetBtn = document.querySelector('.reset');
+const pc = document.querySelector('.pc');
+const playerChoice = document.querySelector('.playerChoice');
+const pcChoice = document.querySelector('.pcChoice');
+const result = document.querySelector('.result');
+
+const playerSelection = function(e) {
+    if (!scoreKeeper.gameOver) {
+        scoreKeeper.userSelection = e.target.value;
+        scoreKeeper.pcSelection = computerPlay(pcInput);
+        playRound(scoreKeeper);
+        player.innerHTML = scoreKeeper.user;
+        pc.innerHTML = scoreKeeper.pc;
+        playerChoice.innerHTML = scoreKeeper.userSelection;
+        pcChoice.innerHTML = scoreKeeper.pcSelection;
+        isWinner(scoreKeeper);
     }
 }
 
-game(scoreKeeper);
+btn.forEach(btn => btn.addEventListener("click", playerSelection));
+
+function reset() {
+    scoreKeeper.pc = 0;
+    scoreKeeper.user = 0;
+    scoreKeeper.gameOver = false;
+    player.innerHTML = 0;
+    pc.innerHTML = 0;
+    result.innerHTML = '';
+}
+
+function isWinner(score) {
+    if (score.user === 5) {
+        result.textContent = 'You won, you got 5!';
+        score.gameOver = true;
+
+    } else if (score.pc === 5) {
+        result.textContent = 'You lost, computer got 5!';
+        score.gameOver = true;
+    }
+}
+resetBtn.addEventListener('click', reset);
