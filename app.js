@@ -77,16 +77,21 @@ function reset() {
     player.innerHTML = 0;
     pc.innerHTML = 0;
     result.innerHTML = '';
+    player.classList.remove('win', 'lose');
+    pc.classList.remove('lose', 'win');
 }
 
 function isWinner(score) {
     if (score.user === 5) {
-        result.textContent = 'You won, you got 5!';
+        result.textContent = 'You won, you got 5 points!';
         score.gameOver = true;
-
+        player.classList.add('win');
+        pc.classList.add('lose');
     } else if (score.pc === 5) {
-        result.textContent = 'You lost, computer got 5!';
+        result.textContent = 'You lost, computer got 5 points!';
         score.gameOver = true;
+        player.classList.add('lose');
+        pc.classList.add('win');
     }
 }
 resetBtn.addEventListener('click', reset);
